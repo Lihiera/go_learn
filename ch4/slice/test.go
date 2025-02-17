@@ -5,8 +5,9 @@ import (
 )
 
 func main() {
-	var name string
-	fmt.Println("Enter your name: ")
-	fmt.Scanln(&name)
-	fmt.Println("Hello, ", name)
+	list := []string{"af", "br", "2c", "34"}
+	spring1 := fmt.Sprintf("%q", list)
+	fmt.Println(string(spring1[1]))
+	fmt.Printf("%T\n", spring1)
+	fmt.Println(list)
 }
