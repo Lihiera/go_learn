@@ -11,7 +11,7 @@ import (
 var count = make(map[string]int)
 
 func main() {
-	resp, err := http.Get("https://www.lsta.media.kyoto-u.ac.jp/internal-wiki/index.php")
+	resp, err := http.Get("https://golang.org")
 	if err != nil {
 		fmt.Printf("Cant access the site: %v\n", err)
 	}
@@ -25,12 +25,12 @@ func main() {
 		fmt.Fprintf(os.Stderr, "findlinks1: %v\n", err)
 		os.Exit(1)
 	}
-	for _, link := range visit(nil, doc, "input") {
+	for _, link := range visit(nil, doc, "a") {
 		fmt.Println(link)
 	}
-	for key, value := range count {
-		fmt.Printf("%s: %v\n", key, value)
-	}
+	// for key, value := range count {
+	// 	fmt.Printf("%s: %v\n", key, value)
+	// }
 }
 
 func visit(links []string, n *html.Node, cate string) []string {

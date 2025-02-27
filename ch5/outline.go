@@ -27,10 +27,10 @@ func main() {
 }
 
 func forEachNode(n *html.Node, pre, post func(n *html.Node)) {
-	if n.FirstChild == nil {
-		briefElement(n)
-		return
-	}
+	// if n.FirstChild == nil {
+	// 	briefElement(n)
+	// 	return
+	// }
 	if pre != nil {
 		pre(n)
 	}
