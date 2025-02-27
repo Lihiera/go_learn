@@ -26,7 +26,7 @@ func main() {
 	forEachNode(doc, startElement, endElement)
 }
 
-func forEachNode(n *html.Node, pre, post func(n *html.Node)) {
+func ElementByID(doc *html.Node, id string) *html.Node {
 	if n.FirstChild == nil {
 		briefElement(n)
 		return
@@ -42,37 +42,37 @@ func forEachNode(n *html.Node, pre, post func(n *html.Node)) {
 	}
 }
 
-var depth int
+var depth1 int
 
-func startElement(n *html.Node) {
+func startElement1(n *html.Node, id string) {
 	if n.Type == html.ElementNode {
 		//fmt.Printf("%*s<%s>\n", depth*2, "", n.Data)
-		fmt.Printf("%*s<%s", depth*2, "", n.Data)
+		fmt.Printf("%*s<%s", depth1*2, "", n.Data)
 		for _, a := range n.Attr {
 			fmt.Printf(" %s=%q", a.Key, a.Val)
 		}
 		fmt.Println(">")
-		depth++
+		depth1++
 	}
 	if n.Type == html.TextNode {
-		fmt.Printf("%*sText:%q\n", depth*2, "", n.Data)
+		fmt.Printf("%*sText:%q\n", depth1*2, "", n.Data)
 		// fmt.Println("Text Node")
 	}
 	if n.Type == html.CommentNode {
-		fmt.Printf("%*sComment:%q\n", depth*2, "", n.Data)
+		fmt.Printf("%*sComment:%q\n", depth1*2, "", n.Data)
 		// fmt.Println("Text Node")
 	}
 }
-func endElement(n *html.Node) {
+func endElement1(n *html.Node) {
 	if n.Type == html.ElementNode {
-		depth--
-		fmt.Printf("%*s</%s>\n", depth*2, "", n.Data)
+		depth1--
+		fmt.Printf("%*s</%s>\n", depth1*2, "", n.Data)
 	}
 }
 
 func briefElement(n *html.Node) {
 	if n.Type == html.ElementNode {
-		fmt.Printf("%*s<%s", depth*2, "", n.Data)
+		fmt.Printf("%*s<%s", depth1*2, "", n.Data)
 		for _, a := range n.Attr {
 			fmt.Printf(" %s=%q", a.Key, a.Val)
 		}
