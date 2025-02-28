@@ -70,7 +70,7 @@ func endElement1(n *html.Node) {
 	}
 }
 
-func briefElement(n *html.Node) {
+func briefElement1(n *html.Node) {
 	if n.Type == html.ElementNode {
 		fmt.Printf("%*s<%s", depth1*2, "", n.Data)
 		for _, a := range n.Attr {
