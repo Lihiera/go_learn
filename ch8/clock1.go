@@ -1,14 +1,21 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"io"
 	"log"
 	"net"
 	"time"
 )
 
+var port = flag.Int("port", 8000, "The server's port.")
+var location = flag.String("loc", "Local", "Your location.")
+
 func main() {
-	listener, err := net.Listen("tcp", "localhost:8000")
+	flag.Parse()
+	server := fmt.Sprintf("localhost:%d", *port)
+	listener, err := net.Listen("tcp", server)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -19,14 +26,17 @@ func main() {
 			log.Print(err) // e.g., connection aborted
 			continue
 		}
-		go handleConn(conn) // handle one connection at a time
+		go handleConn1(conn) // handle one connection at a time
 	}
 }
 
-func handleConn(c net.Conn) {
+func handleConn1(c net.Conn) {
 	defer c.Close()
 	for {
-		_, err := io.WriteString(c, time.Now().Format("15:04:05\n"))
+		utc := time.Now().UTC()
+		loc, _ := time.LoadLocation(*location)
+		Time := utc.In(loc)
+		_, err := io.WriteString(c, Time.Format("2006-01-02 15:04:05\n"))
 		if err != nil {
 			return // e.g., client disconnected
 		}
