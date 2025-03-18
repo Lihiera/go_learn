@@ -60,6 +60,5 @@ func handleConn(c net.Conn) {
 			default:
 			}
 		}
-
 	}
 }
