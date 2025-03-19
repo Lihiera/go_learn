@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io"
 	"log"
 	"net"
@@ -20,7 +19,6 @@ func main() {
 		done <- struct{}{} // signal the main goroutine
 	}()
 	_, err = io.Copy(conn, os.Stdin)
-	fmt.Println("err is", err)
 	tcpc := conn.(*net.TCPConn)
 	tcpc.CloseWrite()
 	<-done // wait for background goroutine to finish
