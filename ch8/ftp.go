@@ -8,6 +8,7 @@ import (
 	"net"
 	"os"
 	"os/user"
+	"path/filepath"
 	"strings"
 )
 
@@ -44,7 +45,7 @@ func handleConn(c net.Conn) {
 			io.WriteString(c, fmt.Sprintln(err))
 			return
 		}
-		_, err = io.WriteString(c, fmt.Sprintf("$ %s:", dir))
+		_, err = io.WriteString(c, fmt.Sprintf("\r\n$ %s:", dir))
 
 		command, _, err := reader.ReadLine()
 		if err != nil {
@@ -53,12 +54,43 @@ func handleConn(c net.Conn) {
 		paras := strings.Fields(string(command))
 		if len(paras) == 1 {
 			switch paras[0] {
-			case "cd":
 			case "ls":
+				var res []string
+				files, _ := os.ReadDir("./")
+				for i, file := range files {
+					if i%2 == 1 {
+						res = append(res, fmt.Sprintf("%s\t", file.Name()))
+					} else {
+						res = append(res, fmt.Sprintf("%s\r\n", file.Name()))
+					}
+
+				}
+				io.WriteString(c, strings.Join(res, ""))
 			case "close":
 				return
 			default:
+				io.WriteString(c, "No such command")
 			}
+		} else if len(paras) == 2 {
+			switch paras[0] {
+			case "cd":
+				if err := os.Chdir(filepath.Join(dir, paras[1])); err != nil {
+					io.WriteString(c, fmt.Sprintln(err))
+				}
+			default:
+				io.WriteString(c, "No such command")
+			}
+
+		} else if len(paras) == 3 {
+			switch paras[0] {
+			case "get":
+			case "send":
+			default:
+				io.WriteString(c, "No such command")
+			}
+
+		} else {
+			io.WriteString(c, "No such command")
 		}
 
 	}
