@@ -92,6 +92,5 @@ func handleConn(c net.Conn) {
 		} else {
 			io.WriteString(c, "No such command")
 		}
-
 	}
 }
