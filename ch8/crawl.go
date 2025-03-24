@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 
@@ -164,12 +165,19 @@ func extract(url string) ([]string, error) {
 				if a.Key != "href" {
 					continue
 				}
-				link, err := resp.Request.URL.Parse(a.Val)
-				relativePath := resp.Request.URL.Path(a.Val)
+				link, _ := resp.Request.URL.Parse(a.Val)
 				if err != nil {
 					continue // ignore bad URLs
 				}
-				links = append(links, link.String())
+				relativePath := resp.Request.URL.Path(a.Val)
+				os.MkdirAll(filepath.Dir(relativePath), os.ModePerm)
+				file, err := os.Create(relativePath)
+				if err != nil {
+					continue // ignore bad URLs
+				}
+				defer file.Close()
+				resp, err := http.Get(link.String())
+
 			}
 		}
 	}
