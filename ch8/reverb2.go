@@ -25,17 +25,29 @@ func main() {
 }
 
 func handleConn(c net.Conn) {
-	input := bufio.NewScanner(c)
-	var wg sync.WaitGroup
-	for input.Scan() {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			echo(c, input.Text(), 1*time.Second)
-		}()
+	done := make(chan struct{})
+	timer := time.NewTimer(10 * time.Second)
+	go func() {
+		input := bufio.NewScanner(c)
+		var wg sync.WaitGroup
+		for input.Scan() {
+			timer.Reset(10 * time.Second)
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				echo(c, input.Text(), 1*time.Second)
+			}()
+		}
+		wg.Wait()
+		done <- struct{}{}
+	}()
+	select {
+	case <-timer.C:
+		fmt.Fprintf(c, "Connection closed due to inactivity in 10 seconds\n")
+		timer.Stop()
+	case <-done:
 	}
 	// NOTE: ignoring potential errors from input.Err()
-	wg.Wait()
 	c.Close()
 }
 
